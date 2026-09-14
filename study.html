@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FOCUSLY - Study Planner</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#172033;
+    padding-bottom:90px;
+}
+
+.header{
+    background:#172033;
+    color:white;
+    padding:22px 20px;
+    border-radius:0 0 25px 25px;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.8;
+    margin-top:5px;
+}
+
+.container{
+    padding:20px;
+}
+
+.back{
+    display:inline-block;
+    margin-bottom:18px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.form-card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+    margin-bottom:20px;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:14px;
+    background:white;
+}
+
+.add-btn{
+    width:100%;
+    border:none;
+    background:#172033;
+    color:white;
+    padding:14px;
+    border-radius:11px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:8px;
+    margin-bottom:20px;
+}
+
+.summary-card{
+    background:white;
+    padding:13px 8px;
+    text-align:center;
+    border-radius:14px;
+    box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+
+.summary-number{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.summary-label{
+    font-size:11px;
+    color:#687386;
+    margin-top:4px;
+}
+
+.section-title{
+    font-size:19px;
+    font-weight:bold;
+    margin:20px 0 12px;
+}
+
+.study-card{
+    background:white;
+    padding:17px;
+    border-radius:17px;
+    margin-bottom:12px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.study-card.completed{
+    opacity:.65;
+}
+
+.topic{
+    font-size:17px;
+    font-weight:bold;
+}
+
+.info{
+    color:#687386;
+    font-size:13px;
+    margin-top:6px;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    margin-top:13px;
+}
+
+.complete-btn,
+.delete-btn{
+    border:none;
+    padding:10px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:bold;
+    flex:1;
+}
+
+.complete-btn{
+    background:#172033;
+    color:white;
+}
+
+.delete-btn{
+    background:#f0f1f4;
+    color:#172033;
+}
+
+.empty{
+    background:white;
+    padding:25px;
+    text-align:center;
+    border-radius:17px;
+    color:#687386;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>📚 Study Planner</h1>
+    <p>Plan your study. Track your progress.</p>
+</div>
+
+
+<div class="container">
+
+    <div class="back" onclick="focuslyGo('index.html')">
+        ← Back to Dashboard
+    </div>
+
+
+    <!-- ADD STUDY PLAN -->
+
+    <div class="form-card">
+
+        <select id="studySubject">
+
+            <option value="">
+                Select Subject
+            </option>
+
+            <option>DBMS</option>
+
+            <option>Data Structures</option>
+
+            <option>Python Programming</option>
+
+            <option>Digital System Architecture</option>
+
+            <option>Marketing Management</option>
+
+            <option>Other</option>
+
+        </select>
+
+
+        <input
+            type="text"
+            id="studyTopic"
+            placeholder="Topic to study"
+        >
+
+
+        <input
+            type="date"
+            id="studyDate"
+        >
+
+
+        <input
+            type="number"
+            id="studyDuration"
+            placeholder="Duration in minutes"
+            min="1"
+        >
+
+
+        <button
+            class="add-btn"
+            onclick="addStudyPlan()"
+        >
+            ➕ Add Study Plan
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <div
+                class="summary-number"
+                id="totalCount"
+            >
+                0
+            </div>
+
+            <div class="summary-label">
+                Total
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div
+                class="summary-number"
+                id="pendingCount"
+            >
+                0
+            </div>
+
+            <div class="summary-label">
+                Pending
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div
+                class="summary-number"
+                id="completedCount"
+            >
+                0
+            </div>
+
+            <div class="summary-label">
+                Done
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section-title">
+        📖 My Study Plans
+    </div>
+
+
+    <div id="studyList"></div>
+
+</div>
+
+
+<!-- COMMON NAVIGATION -->
+
+<script src="nav.js"></script>
+
+
+<script>
+
+let studyPlans = [];
+
+
+/* LOAD */
+
+function loadStudyPlans(){
+
+    const saved =
+        localStorage.getItem("focuslyStudyPlans");
+
+    if(saved){
+
+        try{
+
+            studyPlans = JSON.parse(saved);
+
+            if(!Array.isArray(studyPlans)){
+
+                studyPlans = [];
+
+            }
+
+        }catch(error){
+
+            studyPlans = [];
+
+        }
+
+    }
+
+    renderStudyPlans();
+
+}
+
+
+/* SAVE */
+
+function saveStudyPlans(){
+
+    localStorage.setItem(
+        "focuslyStudyPlans",
+        JSON.stringify(studyPlans)
+    );
+
+}
+
+
+/* ADD */
+
+function addStudyPlan(){
+
+    const subject =
+        document.getElementById("studySubject").value;
+
+    const topic =
+        document.getElementById("studyTopic")
+        .value
+        .trim();
+
+    const date =
+        document.getElementById("studyDate").value;
+
+    const duration =
+        document.getElementById("studyDuration").value;
+
+
+    if(!subject){
+
+        alert("Please select a subject.");
+
+        return;
+
+    }
+
+
+    if(!topic){
+
+        alert("Please enter a topic.");
+
+        return;
+
+    }
+
+
+    if(!date){
+
+        alert("Please select study date.");
+
+        return;
+
+    }
+
+
+    const plan = {
+
+        id:Date.now(),
+
+        subject:subject,
+
+        topic:topic,
+
+        date:date,
+
+        duration:Number(duration) || 0,
+
+        completed:false
+
+    };
+
+
+    studyPlans.push(plan);
+
+    saveStudyPlans();
+
+
+    document.getElementById("studySubject").value = "";
+
+    document.getElementById("studyTopic").value = "";
+
+    document.getElementById("studyDate").value = "";
+
+    document.getElementById("studyDuration").value = "";
+
+
+    renderStudyPlans();
+
+}
+
+
+/* TOGGLE */
+
+function toggleStudyPlan(id){
+
+    const plan =
+        studyPlans.find(
+            item => item.id === id
+        );
+
+
+    if(plan){
+
+        plan.completed =
+            !plan.completed;
+
+    }
+
+
+    saveStudyPlans();
+
+    renderStudyPlans();
+
+}
+
+
+/* DELETE */
+
+function deleteStudyPlan(id){
+
+    if(!confirm("Delete this study plan?")){
+
+        return;
+
+    }
+
+
+    studyPlans =
+        studyPlans.filter(
+            item => item.id !== id
+        );
+
+
+    saveStudyPlans();
+
+    renderStudyPlans();
+
+}
+
+
+/* DISPLAY */
+
+function renderStudyPlans(){
+
+    const list =
+        document.getElementById("studyList");
+
+    list.innerHTML = "";
+
+
+    /* SUMMARY */
+
+    const total =
+        studyPlans.length;
+
+    const completed =
+        studyPlans.filter(
+            plan => plan.completed === true
+        ).length;
+
+    const pending =
+        total - completed;
+
+
+    document.getElementById("totalCount")
+        .textContent = total;
+
+    document.getElementById("pendingCount")
+        .textContent = pending;
+
+    document.getElementById("completedCount")
+        .textContent = completed;
+
+
+    /* EMPTY */
+
+    if(total === 0){
+
+        list.innerHTML = `
+            <div class="empty">
+                No study plans yet.<br><br>
+                Add your first study plan 🚀
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    /* SORT */
+
+    const sortedPlans =
+        [...studyPlans].sort(
+            (a,b) => {
+
+                if(a.completed !== b.completed){
+
+                    return a.completed ? 1 : -1;
+
+                }
+
+                return a.date.localeCompare(b.date);
+
+            }
+        );
+
+
+    /* CARDS */
+
+    sortedPlans.forEach(plan => {
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "study-card" +
+            (plan.completed
+                ? " completed"
+                : "");
+
+
+        let formattedDate = "No date";
+
+
+        if(plan.date){
+
+            const date =
+                new Date(
+                    plan.date + "T00:00:00"
+                );
+
+
+            formattedDate =
+                date.toLocaleDateString(
+                    "en-IN",
+                    {
+                        day:"2-digit",
+                        month:"short",
+                        year:"numeric"
+                    }
+                );
+
+        }
+
+
+        const durationText =
+            plan.duration > 0
+                ? plan.duration + " minutes"
+                : "Duration not set";
+
+
+        card.innerHTML = `
+
+            <div class="topic">
+                ${escapeHTML(plan.topic)}
+            </div>
+
+
+            <div class="info">
+                📚 ${escapeHTML(plan.subject)}
+            </div>
+
+
+            <div class="info">
+                📅 ${formattedDate}
+            </div>
+
+
+            <div class="info">
+                ⏱️ ${durationText}
+            </div>
+
+
+            <div class="info">
+                ${
+                    plan.completed
+                    ? "✅ Completed"
+                    : "⏳ Pending"
+                }
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="complete-btn"
+                    onclick="toggleStudyPlan(${plan.id})"
+                >
+                    ${
+                        plan.completed
+                        ? "↩ Mark Pending"
+                        : "✓ Complete"
+                    }
+                </button>
+
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteStudyPlan(${plan.id})"
+                >
+                    🗑 Delete
+                </button>
+
+            </div>
+
+        `;
+
+
+        list.appendChild(card);
+
+    });
+
+}
+
+
+/* TEXT SAFETY */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* START */
+
+loadStudyPlans();
+
+createFocuslyNav("study");
+
+</script>
+
+</body>
+</html>
