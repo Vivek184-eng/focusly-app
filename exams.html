@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FOCUSLY - Exams</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#172033;
+    padding-bottom:90px;
+}
+
+.header{
+    background:#172033;
+    color:white;
+    padding:22px 20px;
+    border-radius:0 0 25px 25px;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.8;
+    margin-top:5px;
+}
+
+.container{
+    padding:20px;
+}
+
+.back{
+    display:inline-block;
+    margin-bottom:18px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.form-card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+    margin-bottom:20px;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:14px;
+    background:white;
+}
+
+.add-btn{
+    width:100%;
+    border:none;
+    background:#172033;
+    color:white;
+    padding:14px;
+    border-radius:11px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.section-title{
+    font-size:19px;
+    font-weight:bold;
+    margin:20px 0 12px;
+}
+
+.exam-card{
+    background:white;
+    padding:17px;
+    border-radius:17px;
+    margin-bottom:12px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.exam-subject{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.info{
+    color:#687386;
+    font-size:13px;
+    margin-top:6px;
+}
+
+.countdown{
+    margin-top:12px;
+    padding:11px;
+    border-radius:10px;
+    background:#f5f7fb;
+    font-weight:bold;
+}
+
+.delete-btn{
+    width:100%;
+    border:none;
+    padding:10px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-top:12px;
+    background:#f0f1f4;
+    color:#172033;
+}
+
+.empty{
+    background:white;
+    padding:25px;
+    text-align:center;
+    border-radius:17px;
+    color:#687386;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>📝 Exams</h1>
+    <p>Track exams and preparation</p>
+</div>
+
+
+<div class="container">
+
+    <div class="back" onclick="focuslyGo('index.html')">
+        ← Back to Dashboard
+    </div>
+
+
+    <!-- ADD EXAM -->
+
+    <div class="form-card">
+
+        <select id="examSubject">
+
+            <option value="">
+                Select Subject
+            </option>
+
+            <option>DBMS</option>
+
+            <option>Data Structures</option>
+
+            <option>Python Programming</option>
+
+            <option>Digital System Architecture</option>
+
+            <option>Marketing Management</option>
+
+            <option>Other</option>
+
+        </select>
+
+
+        <select id="examType">
+
+            <option value="">
+                Select Exam Type
+            </option>
+
+            <option>Internal</option>
+
+            <option>Semester</option>
+
+            <option>Practical</option>
+
+            <option>Assignment</option>
+
+            <option>Other</option>
+
+        </select>
+
+
+        <input
+            type="date"
+            id="examDate"
+        >
+
+
+        <input
+            type="number"
+            id="examPreparation"
+            placeholder="Preparation % (0-100)"
+            min="0"
+            max="100"
+        >
+
+
+        <button
+            class="add-btn"
+            onclick="addExam()"
+        >
+            ➕ Add Exam
+        </button>
+
+    </div>
+
+
+    <div class="section-title">
+        📅 Upcoming Exams
+    </div>
+
+
+    <div id="examList"></div>
+
+</div>
+
+
+<!-- COMMON NAVIGATION -->
+
+<script src="nav.js"></script>
+
+
+<script>
+
+let exams = [];
+
+
+/* LOAD EXAMS */
+
+function loadExams(){
+
+    const saved =
+        localStorage.getItem("focuslyExams");
+
+    if(saved){
+
+        try{
+
+            exams = JSON.parse(saved);
+
+            if(!Array.isArray(exams)){
+
+                exams = [];
+
+            }
+
+        }catch(error){
+
+            exams = [];
+
+        }
+
+    }
+
+    renderExams();
+
+}
+
+
+/* SAVE */
+
+function saveExams(){
+
+    localStorage.setItem(
+        "focuslyExams",
+        JSON.stringify(exams)
+    );
+
+}
+
+
+/* ADD EXAM */
+
+function addExam(){
+
+    const subject =
+        document.getElementById("examSubject").value;
+
+    const type =
+        document.getElementById("examType").value;
+
+    const date =
+        document.getElementById("examDate").value;
+
+    let preparation =
+        Number(
+            document.getElementById("examPreparation").value
+        );
+
+
+    if(!subject){
+
+        alert("Please select a subject.");
+
+        return;
+
+    }
+
+
+    if(!type){
+
+        alert("Please select exam type.");
+
+        return;
+
+    }
+
+
+    if(!date){
+
+        alert("Please select exam date.");
+
+        return;
+
+    }
+
+
+    if(isNaN(preparation)){
+
+        preparation = 0;
+
+    }
+
+
+    preparation =
+        Math.max(0,Math.min(100,preparation));
+
+
+    const exam = {
+
+        id:Date.now(),
+
+        subject:subject,
+
+        type:type,
+
+        date:date,
+
+        preparation:preparation
+
+    };
+
+
+    exams.push(exam);
+
+    saveExams();
+
+
+    document.getElementById("examSubject").value = "";
+
+    document.getElementById("examType").value = "";
+
+    document.getElementById("examDate").value = "";
+
+    document.getElementById("examPreparation").value = "";
+
+
+    renderExams();
+
+}
+
+
+/* DELETE */
+
+function deleteExam(id){
+
+    if(!confirm("Delete this exam?")){
+
+        return;
+
+    }
+
+
+    exams =
+        exams.filter(
+            exam => exam.id !== id
+        );
+
+
+    saveExams();
+
+    renderExams();
+
+}
+
+
+/* DAYS LEFT */
+
+function getDaysLeft(dateString){
+
+    const today =
+        new Date();
+
+    today.setHours(0,0,0,0);
+
+
+    const examDate =
+        new Date(
+            dateString + "T00:00:00"
+        );
+
+
+    examDate.setHours(0,0,0,0);
+
+
+    const difference =
+        examDate.getTime()
+        -
+        today.getTime();
+
+
+    return Math.ceil(
+        difference /
+        (1000 * 60 * 60 * 24)
+    );
+
+}
+
+
+/* DISPLAY */
+
+function renderExams(){
+
+    const list =
+        document.getElementById("examList");
+
+    list.innerHTML = "";
+
+
+    if(exams.length === 0){
+
+        list.innerHTML = `
+            <div class="empty">
+                No exams added yet.<br><br>
+                Add your first exam 🚀
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const sortedExams =
+        [...exams].sort(
+            (a,b) =>
+                a.date.localeCompare(b.date)
+        );
+
+
+    sortedExams.forEach(exam => {
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "exam-card";
+
+
+        const date =
+            new Date(
+                exam.date + "T00:00:00"
+            );
+
+
+        const formattedDate =
+            date.toLocaleDateString(
+                "en-IN",
+                {
+                    day:"2-digit",
+                    month:"short",
+                    year:"numeric"
+                }
+            );
+
+
+        const daysLeft =
+            getDaysLeft(exam.date);
+
+
+        let countdownText;
+
+
+        if(daysLeft < 0){
+
+            countdownText =
+                "⚠️ Exam date passed";
+
+        }
+        else if(daysLeft === 0){
+
+            countdownText =
+                "🔥 Exam is TODAY!";
+
+        }
+        else if(daysLeft === 1){
+
+            countdownText =
+                "⏳ 1 day left";
+
+        }
+        else{
+
+            countdownText =
+                "⏳ " +
+                daysLeft +
+                " days left";
+
+        }
+
+
+        card.innerHTML = `
+
+            <div class="exam-subject">
+                ${escapeHTML(exam.subject)}
+            </div>
+
+            <div class="info">
+                📝 ${escapeHTML(exam.type)}
+            </div>
+
+            <div class="info">
+                📅 ${formattedDate}
+            </div>
+
+            <div class="info">
+                📊 Preparation:
+                ${exam.preparation}%
+            </div>
+
+            <div class="countdown">
+                ${countdownText}
+            </div>
+
+            <button
+                class="delete-btn"
+                onclick="deleteExam(${exam.id})"
+            >
+                🗑 Delete Exam
+            </button>
+
+        `;
+
+
+        list.appendChild(card);
+
+    });
+
+}
+
+
+/* TEXT SAFETY */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* START */
+
+loadExams();
+
+createFocuslyNav("exams");
+
+</script>
+
+</body>
+</html>
