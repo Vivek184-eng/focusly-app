@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FOCUSLY - Reminders</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#172033;
+    padding-bottom:90px;
+}
+
+.header{
+    background:#172033;
+    color:white;
+    padding:22px 20px;
+    border-radius:0 0 25px 25px;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.8;
+    margin-top:5px;
+}
+
+.container{
+    padding:20px;
+}
+
+.back{
+    display:inline-block;
+    margin-bottom:18px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.form-card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+    margin-bottom:20px;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:14px;
+    background:white;
+}
+
+.add-btn{
+    width:100%;
+    border:none;
+    background:#172033;
+    color:white;
+    padding:14px;
+    border-radius:11px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:8px;
+    margin-bottom:20px;
+}
+
+.summary-card{
+    background:white;
+    padding:13px 8px;
+    text-align:center;
+    border-radius:14px;
+    box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+
+.summary-number{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.summary-label{
+    font-size:11px;
+    color:#687386;
+    margin-top:4px;
+}
+
+.section-title{
+    font-size:19px;
+    font-weight:bold;
+    margin:20px 0 12px;
+}
+
+.reminder-card{
+    background:white;
+    padding:17px;
+    border-radius:17px;
+    margin-bottom:12px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.reminder-card.completed{
+    opacity:.65;
+}
+
+.reminder-title{
+    font-size:17px;
+    font-weight:bold;
+}
+
+.info{
+    color:#687386;
+    font-size:13px;
+    margin-top:6px;
+}
+
+.status{
+    margin-top:10px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    margin-top:13px;
+}
+
+.complete-btn,
+.delete-btn{
+    border:none;
+    padding:10px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:bold;
+    flex:1;
+}
+
+.complete-btn{
+    background:#172033;
+    color:white;
+}
+
+.delete-btn{
+    background:#f0f1f4;
+    color:#172033;
+}
+
+.empty{
+    background:white;
+    padding:25px;
+    text-align:center;
+    border-radius:17px;
+    color:#687386;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🔔 Reminders</h1>
+    <p>Never miss an important task</p>
+</div>
+
+
+<div class="container">
+
+    <div class="back" onclick="focuslyGo('index.html')">
+        ← Back to Dashboard
+    </div>
+
+
+    <!-- ADD REMINDER -->
+
+    <div class="form-card">
+
+        <input
+            type="text"
+            id="reminderTitle"
+            placeholder="Reminder title"
+        >
+
+
+        <select id="reminderCategory">
+
+            <option value="">
+                Select Category
+            </option>
+
+            <option>College</option>
+
+            <option>Study</option>
+
+            <option>Exam</option>
+
+            <option>Assignment</option>
+
+            <option>Career</option>
+
+            <option>Personal</option>
+
+        </select>
+
+
+        <input
+            type="date"
+            id="reminderDate"
+        >
+
+
+        <input
+            type="time"
+            id="reminderTime"
+        >
+
+
+        <button
+            class="add-btn"
+            onclick="addReminder()"
+        >
+            ➕ Add Reminder
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <div
+                class="summary-number"
+                id="totalCount"
+            >
+                0
+            </div>
+
+            <div class="summary-label">
+                Total
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div
+                class="summary-number"
+                id="pendingCount"
+            >
+                0
+            </div>
+
+            <div class="summary-label">
+                Pending
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div
+                class="summary-number"
+                id="completedCount"
+            >
+                0
+            </div>
+
+            <div class="summary-label">
+                Done
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section-title">
+        🔔 My Reminders
+    </div>
+
+
+    <div id="reminderList"></div>
+
+</div>
+
+
+<!-- COMMON NAVIGATION -->
+
+<script src="nav.js"></script>
+
+
+<script>
+
+let reminders = [];
+
+
+/* LOAD */
+
+function loadReminders(){
+
+    const saved =
+        localStorage.getItem("focuslyReminders");
+
+    if(saved){
+
+        try{
+
+            reminders = JSON.parse(saved);
+
+            if(!Array.isArray(reminders)){
+
+                reminders = [];
+
+            }
+
+        }catch(error){
+
+            reminders = [];
+
+        }
+
+    }
+
+    renderReminders();
+
+}
+
+
+/* SAVE */
+
+function saveReminders(){
+
+    localStorage.setItem(
+        "focuslyReminders",
+        JSON.stringify(reminders)
+    );
+
+}
+
+
+/* ADD */
+
+function addReminder(){
+
+    const title =
+        document.getElementById("reminderTitle")
+        .value
+        .trim();
+
+    const category =
+        document.getElementById("reminderCategory")
+        .value;
+
+    const date =
+        document.getElementById("reminderDate")
+        .value;
+
+    const time =
+        document.getElementById("reminderTime")
+        .value;
+
+
+    if(!title){
+
+        alert("Please enter reminder title.");
+
+        return;
+
+    }
+
+
+    if(!category){
+
+        alert("Please select a category.");
+
+        return;
+
+    }
+
+
+    if(!date){
+
+        alert("Please select date.");
+
+        return;
+
+    }
+
+
+    if(!time){
+
+        alert("Please select time.");
+
+        return;
+
+    }
+
+
+    const reminder = {
+
+        id:Date.now(),
+
+        title:title,
+
+        category:category,
+
+        date:date,
+
+        time:time,
+
+        completed:false
+
+    };
+
+
+    reminders.push(reminder);
+
+    saveReminders();
+
+
+    document.getElementById("reminderTitle").value = "";
+
+    document.getElementById("reminderCategory").value = "";
+
+    document.getElementById("reminderDate").value = "";
+
+    document.getElementById("reminderTime").value = "";
+
+
+    renderReminders();
+
+}
+
+
+/* TOGGLE */
+
+function toggleReminder(id){
+
+    const reminder =
+        reminders.find(
+            item => item.id === id
+        );
+
+
+    if(reminder){
+
+        reminder.completed =
+            !reminder.completed;
+
+    }
+
+
+    saveReminders();
+
+    renderReminders();
+
+}
+
+
+/* DELETE */
+
+function deleteReminder(id){
+
+    if(!confirm("Delete this reminder?")){
+
+        return;
+
+    }
+
+
+    reminders =
+        reminders.filter(
+            item => item.id !== id
+        );
+
+
+    saveReminders();
+
+    renderReminders();
+
+}
+
+
+/* DISPLAY */
+
+function renderReminders(){
+
+    const list =
+        document.getElementById("reminderList");
+
+    list.innerHTML = "";
+
+
+    const total =
+        reminders.length;
+
+    const completed =
+        reminders.filter(
+            reminder => reminder.completed === true
+        ).length;
+
+    const pending =
+        total - completed;
+
+
+    document.getElementById("totalCount")
+        .textContent = total;
+
+    document.getElementById("pendingCount")
+        .textContent = pending;
+
+    document.getElementById("completedCount")
+        .textContent = completed;
+
+
+    if(total === 0){
+
+        list.innerHTML = `
+            <div class="empty">
+                No reminders yet.<br><br>
+                Add your first reminder 🔔
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    /* Pending first, then date/time */
+
+    const sortedReminders =
+        [...reminders].sort(
+            (a,b) => {
+
+                if(a.completed !== b.completed){
+
+                    return a.completed ? 1 : -1;
+
+                }
+
+
+                const dateA =
+                    a.date + " " + a.time;
+
+                const dateB =
+                    b.date + " " + b.time;
+
+
+                return dateA.localeCompare(dateB);
+
+            }
+        );
+
+
+    sortedReminders.forEach(reminder => {
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "reminder-card" +
+            (reminder.completed
+                ? " completed"
+                : "");
+
+
+        const date =
+            new Date(
+                reminder.date + "T00:00:00"
+            );
+
+
+        const formattedDate =
+            date.toLocaleDateString(
+                "en-IN",
+                {
+                    day:"2-digit",
+                    month:"short",
+                    year:"numeric"
+                }
+            );
+
+
+        card.innerHTML = `
+
+            <div class="reminder-title">
+                ${escapeHTML(reminder.title)}
+            </div>
+
+
+            <div class="info">
+                📂 ${escapeHTML(reminder.category)}
+            </div>
+
+
+            <div class="info">
+                📅 ${formattedDate}
+            </div>
+
+
+            <div class="info">
+                🕒 ${escapeHTML(reminder.time)}
+            </div>
+
+
+            <div class="status">
+                ${
+                    reminder.completed
+                    ? "✅ Completed"
+                    : "⏳ Pending"
+                }
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="complete-btn"
+                    onclick="toggleReminder(${reminder.id})"
+                >
+                    ${
+                        reminder.completed
+                        ? "↩ Mark Pending"
+                        : "✓ Complete"
+                    }
+                </button>
+
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteReminder(${reminder.id})"
+                >
+                    🗑 Delete
+                </button>
+
+            </div>
+
+        `;
+
+
+        list.appendChild(card);
+
+    });
+
+}
+
+
+/* TEXT SAFETY */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* START */
+
+loadReminders();
+
+createFocuslyNav("reminders");
+
+</script>
+
+</body>
+</html>
