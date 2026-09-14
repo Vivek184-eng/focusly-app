@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FOCUSLY - Tasks</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#172033;
+    padding-bottom:90px;
+}
+
+.header{
+    background:#172033;
+    color:white;
+    padding:22px 20px;
+    border-radius:0 0 25px 25px;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.8;
+    margin-top:5px;
+}
+
+.container{
+    padding:20px;
+}
+
+.back{
+    display:inline-block;
+    margin-bottom:18px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.form-card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+    margin-bottom:20px;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:14px;
+    background:white;
+}
+
+.add-btn{
+    width:100%;
+    border:none;
+    background:#172033;
+    color:white;
+    padding:14px;
+    border-radius:11px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.section-title{
+    font-size:19px;
+    font-weight:bold;
+    margin:20px 0 12px;
+}
+
+.task-card{
+    background:white;
+    padding:17px;
+    border-radius:17px;
+    margin-bottom:12px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.task-card.completed{
+    opacity:.65;
+}
+
+.task-name{
+    font-size:17px;
+    font-weight:bold;
+}
+
+.task-info{
+    color:#687386;
+    font-size:13px;
+    margin-top:6px;
+}
+
+.task-actions{
+    display:flex;
+    gap:8px;
+    margin-top:13px;
+}
+
+.complete-btn,
+.delete-btn{
+    border:none;
+    padding:10px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:bold;
+    flex:1;
+}
+
+.complete-btn{
+    background:#172033;
+    color:white;
+}
+
+.delete-btn{
+    background:#f0f1f4;
+    color:#172033;
+}
+
+.empty{
+    background:white;
+    padding:25px;
+    text-align:center;
+    border-radius:17px;
+    color:#687386;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>✅ Tasks & Assignments</h1>
+    <p>Keep your college work organised</p>
+</div>
+
+<div class="container">
+
+    <div class="back" onclick="focuslyGo('index.html')">
+        ← Back to Dashboard
+    </div>
+
+    <!-- ADD TASK -->
+    <div class="form-card">
+
+        <input
+            type="text"
+            id="taskName"
+            placeholder="Task / Assignment name"
+        >
+
+        <select id="taskSubject">
+            <option value="">Select Subject</option>
+            <option>DBMS</option>
+            <option>Data Structures</option>
+            <option>Python Programming</option>
+            <option>Digital System Architecture</option>
+            <option>Marketing Management</option>
+            <option>Other</option>
+        </select>
+
+        <input
+            type="date"
+            id="taskDate"
+        >
+
+        <button class="add-btn" onclick="addTask()">
+            ➕ Add Task
+        </button>
+
+    </div>
+
+
+    <div class="section-title">
+        📋 My Tasks
+    </div>
+
+    <div id="taskList"></div>
+
+</div>
+
+
+<!-- COMMON NAVIGATION -->
+<script src="nav.js"></script>
+
+<script>
+
+let tasks = [];
+
+
+/* LOAD TASKS */
+
+function loadTasks(){
+
+    const saved = localStorage.getItem("focuslyTasks");
+
+    if(saved){
+
+        try{
+
+            tasks = JSON.parse(saved);
+
+            if(!Array.isArray(tasks)){
+                tasks = [];
+            }
+
+        }catch(error){
+
+            tasks = [];
+
+        }
+
+    }
+
+    renderTasks();
+
+}
+
+
+/* SAVE TASKS */
+
+function saveTasks(){
+
+    localStorage.setItem(
+        "focuslyTasks",
+        JSON.stringify(tasks)
+    );
+
+}
+
+
+/* ADD TASK */
+
+function addTask(){
+
+    const name =
+        document.getElementById("taskName").value.trim();
+
+    const subject =
+        document.getElementById("taskSubject").value;
+
+    const date =
+        document.getElementById("taskDate").value;
+
+
+    if(!name){
+
+        alert("Please enter task name.");
+
+        return;
+
+    }
+
+
+    const task = {
+
+        id: Date.now(),
+
+        name:name,
+
+        subject:subject || "Other",
+
+        date:date || "",
+
+        completed:false
+
+    };
+
+
+    tasks.push(task);
+
+    saveTasks();
+
+    document.getElementById("taskName").value = "";
+
+    document.getElementById("taskSubject").value = "";
+
+    document.getElementById("taskDate").value = "";
+
+    renderTasks();
+
+}
+
+
+/* TOGGLE TASK */
+
+function toggleTask(id){
+
+    const task = tasks.find(
+        item => item.id === id
+    );
+
+    if(task){
+
+        task.completed = !task.completed;
+
+    }
+
+    saveTasks();
+
+    renderTasks();
+
+}
+
+
+/* DELETE TASK */
+
+function deleteTask(id){
+
+    const confirmDelete =
+        confirm("Delete this task?");
+
+    if(!confirmDelete) return;
+
+    tasks = tasks.filter(
+        item => item.id !== id
+    );
+
+    saveTasks();
+
+    renderTasks();
+
+}
+
+
+/* DISPLAY TASKS */
+
+function renderTasks(){
+
+    const list =
+        document.getElementById("taskList");
+
+    list.innerHTML = "";
+
+
+    if(tasks.length === 0){
+
+        list.innerHTML = `
+            <div class="empty">
+                No tasks yet.<br><br>
+                Add your first task above 🚀
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    /* Pending first */
+
+    const sortedTasks = [...tasks].sort(
+        (a,b) => {
+
+            if(a.completed !== b.completed){
+
+                return a.completed ? 1 : -1;
+
+            }
+
+            if(!a.date) return 1;
+
+            if(!b.date) return -1;
+
+            return a.date.localeCompare(b.date);
+
+        }
+    );
+
+
+    sortedTasks.forEach(task => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "task-card" +
+            (task.completed ? " completed" : "");
+
+
+        let dueText = "No due date";
+
+        if(task.date){
+
+            const date =
+                new Date(task.date + "T00:00:00");
+
+            dueText =
+                "Due: " +
+                date.toLocaleDateString(
+                    "en-IN",
+                    {
+                        day:"2-digit",
+                        month:"short",
+                        year:"numeric"
+                    }
+                );
+
+        }
+
+
+        card.innerHTML = `
+
+            <div class="task-name">
+                ${escapeHTML(task.name)}
+            </div>
+
+            <div class="task-info">
+                📚 ${escapeHTML(task.subject)}
+            </div>
+
+            <div class="task-info">
+                📅 ${dueText}
+            </div>
+
+            <div class="task-info">
+                ${task.completed
+                    ? "✅ Completed"
+                    : "⏳ Pending"}
+            </div>
+
+            <div class="task-actions">
+
+                <button
+                    class="complete-btn"
+                    onclick="toggleTask(${task.id})"
+                >
+                    ${task.completed
+                        ? "↩ Mark Pending"
+                        : "✓ Complete"}
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteTask(${task.id})"
+                >
+                    🗑 Delete
+                </button>
+
+            </div>
+        `;
+
+
+        list.appendChild(card);
+
+    });
+
+}
+
+
+/* BASIC TEXT SAFETY */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* START */
+
+loadTasks();
+
+createFocuslyNav("tasks");
+
+</script>
+
+</body>
+</html>
