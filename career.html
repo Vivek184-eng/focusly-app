@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FOCUSLY - Career Focus</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#172033;
+    padding-bottom:90px;
+}
+
+.header{
+    background:#172033;
+    color:white;
+    padding:22px 20px;
+    border-radius:0 0 25px 25px;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.8;
+    margin-top:5px;
+}
+
+.container{
+    padding:20px;
+}
+
+.back{
+    display:inline-block;
+    margin-bottom:18px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    margin-bottom:16px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.card h2{
+    font-size:18px;
+    margin-bottom:12px;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:14px;
+    background:white;
+}
+
+.save-btn{
+    width:100%;
+    border:none;
+    background:#172033;
+    color:white;
+    padding:14px;
+    border-radius:11px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.goal-box{
+    background:#172033;
+    color:white;
+    padding:18px;
+    border-radius:17px;
+    margin-bottom:16px;
+}
+
+.goal-label{
+    font-size:12px;
+    opacity:.75;
+}
+
+.goal{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:6px;
+}
+
+.skill{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:13px 0;
+    border-bottom:1px solid #eee;
+}
+
+.skill:last-child{
+    border-bottom:none;
+}
+
+.skill-name{
+    font-size:14px;
+    font-weight:bold;
+}
+
+.skill button{
+    border:none;
+    padding:9px 12px;
+    border-radius:9px;
+    background:#172033;
+    color:white;
+    cursor:pointer;
+}
+
+.skill.done{
+    opacity:.65;
+}
+
+.targets{
+    display:grid;
+    gap:10px;
+}
+
+.target{
+    background:#f5f7fb;
+    padding:14px;
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.target button{
+    border:none;
+    background:#172033;
+    color:white;
+    padding:8px 11px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.progress-box{
+    margin-top:15px;
+}
+
+.progress-bg{
+    height:10px;
+    background:#e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:#172033;
+    transition:.3s;
+}
+
+.progress-text{
+    margin-top:7px;
+    font-size:13px;
+    color:#687386;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>🎯 Career Focus</h1>
+
+    <p>
+        Build skills for your future career
+    </p>
+
+</div>
+
+
+<div class="container">
+
+    <div
+        class="back"
+        onclick="focuslyGo('index.html')"
+    >
+        ← Back to Dashboard
+    </div>
+
+
+    <!-- CURRENT GOAL -->
+
+    <div class="goal-box">
+
+        <div class="goal-label">
+            CURRENT CAREER GOAL
+        </div>
+
+        <div
+            class="goal"
+            id="currentGoal"
+        >
+            Not Set
+        </div>
+
+    </div>
+
+
+    <!-- CAREER SETTINGS -->
+
+    <div class="card">
+
+        <h2>
+            🎯 Set Career Goal
+        </h2>
+
+
+        <select id="careerGoal">
+
+            <option value="IPS / UPSC">
+                IPS / UPSC
+            </option>
+
+            <option value="Software Developer">
+                Software Developer
+            </option>
+
+            <option value="Data Analyst">
+                Data Analyst
+            </option>
+
+            <option value="Banking">
+                Banking
+            </option>
+
+            <option value="MBA">
+                MBA
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+
+        <input
+            type="number"
+            id="careerHours"
+            min="0"
+            max="24"
+            step="0.5"
+            placeholder="Daily career study target (hours)"
+        >
+
+
+        <button
+            class="save-btn"
+            onclick="saveCareer()"
+        >
+            💾 Save Career Goal
+        </button>
+
+    </div>
+
+
+    <!-- SKILLS -->
+
+    <div class="card">
+
+        <h2>
+            🧠 Skills
+        </h2>
+
+
+        <div
+            class="skill"
+            id="skill-communication"
+        >
+
+            <div class="skill-name">
+                🗣️ Communication
+            </div>
+
+            <button
+                onclick="toggleSkill('communication')"
+            >
+                Mark Done
+            </button>
+
+        </div>
+
+
+        <div
+            class="skill"
+            id="skill-gk"
+        >
+
+            <div class="skill-name">
+                🌎 General Knowledge
+            </div>
+
+            <button
+                onclick="toggleSkill('gk')"
+            >
+                Mark Done
+            </button>
+
+        </div>
+
+
+        <div
+            class="skill"
+            id="skill-problem"
+        >
+
+            <div class="skill-name">
+                🧩 Problem Solving
+            </div>
+
+            <button
+                onclick="toggleSkill('problem')"
+            >
+                Mark Done
+            </button>
+
+        </div>
+
+
+        <div
+            class="skill"
+            id="skill-speaking"
+        >
+
+            <div class="skill-name">
+                🎤 Public Speaking
+            </div>
+
+            <button
+                onclick="toggleSkill('speaking')"
+            >
+                Mark Done
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- DAILY TARGETS -->
+
+    <div class="card">
+
+        <h2>
+            📅 Daily Targets
+        </h2>
+
+
+        <div class="targets">
+
+            <div
+                class="target"
+                id="target-career"
+            >
+
+                <span>
+                    📚 Career Study
+                </span>
+
+                <button
+                    onclick="toggleTarget('career')"
+                >
+                    Done
+                </button>
+
+            </div>
+
+
+            <div
+                class="target"
+                id="target-communication"
+            >
+
+                <span>
+                    🗣️ Communication
+                </span>
+
+                <button
+                    onclick="toggleTarget('communication')"
+                >
+                    Done
+                </button>
+
+            </div>
+
+
+            <div
+                class="target"
+                id="target-skill"
+            >
+
+                <span>
+                    🧠 Skill Practice
+                </span>
+
+                <button
+                    onclick="toggleTarget('skill')"
+                >
+                    Done
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROGRESS -->
+
+        <div class="progress-box">
+
+            <div class="progress-bg">
+
+                <div
+                    class="progress-fill"
+                    id="progressFill"
+                ></div>
+
+            </div>
+
+
+            <div
+                class="progress-text"
+                id="progressText"
+            >
+                Progress: 0%
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- COMMON NAVIGATION -->
+
+<script src="nav.js"></script>
+
+
+<script>
+
+let careerData = {
+
+    goal:"IPS / UPSC",
+
+    hours:0,
+
+    skills:{
+        communication:false,
+        gk:false,
+        problem:false,
+        speaking:false
+    },
+
+    targets:{
+        career:false,
+        communication:false,
+        skill:false
+    }
+
+};
+
+
+/* LOAD DATA */
+
+function loadCareer(){
+
+    const saved =
+        localStorage.getItem("focuslyCareer");
+
+
+    if(saved){
+
+        try{
+
+            const data =
+                JSON.parse(saved);
+
+
+            /*
+             * Keep existing data if available.
+             */
+
+            careerData = {
+
+                ...careerData,
+
+                ...data
+
+            };
+
+
+            if(data.skills){
+
+                careerData.skills = {
+                    ...careerData.skills,
+                    ...data.skills
+                };
+
+            }
+
+
+            if(data.targets){
+
+                careerData.targets = {
+                    ...careerData.targets,
+                    ...data.targets
+                };
+
+            }
+
+        }catch(error){
+
+            console.log("Career data error");
+
+        }
+
+    }
+
+
+    document.getElementById("careerGoal").value =
+        careerData.goal || "IPS / UPSC";
+
+
+    document.getElementById("careerHours").value =
+        careerData.hours || "";
+
+
+    document.getElementById("currentGoal").textContent =
+        careerData.goal || "Not Set";
+
+
+    updateUI();
+
+}
+
+
+/* SAVE */
+
+function saveCareer(){
+
+    careerData.goal =
+        document.getElementById("careerGoal").value;
+
+
+    careerData.hours =
+        Number(
+            document.getElementById("careerHours").value
+        ) || 0;
+
+
+    localStorage.setItem(
+        "focuslyCareer",
+        JSON.stringify(careerData)
+    );
+
+
+    document.getElementById("currentGoal").textContent =
+        careerData.goal;
+
+
+    updateUI();
+
+
+    alert("Career goal saved! 🎯");
+
+}
+
+
+/* SKILL */
+
+function toggleSkill(skill){
+
+    careerData.skills[skill] =
+        !careerData.skills[skill];
+
+
+    saveDataOnly();
+
+    updateUI();
+
+}
+
+
+/* TARGET */
+
+function toggleTarget(target){
+
+    careerData.targets[target] =
+        !careerData.targets[target];
+
+
+    saveDataOnly();
+
+    updateUI();
+
+}
+
+
+/* SAVE WITHOUT ALERT */
+
+function saveDataOnly(){
+
+    localStorage.setItem(
+        "focuslyCareer",
+        JSON.stringify(careerData)
+    );
+
+}
+
+
+/* UPDATE UI */
+
+function updateUI(){
+
+    updateSkill(
+        "communication",
+        "skill-communication"
+    );
+
+    updateSkill(
+        "gk",
+        "skill-gk"
+    );
+
+    updateSkill(
+        "problem",
+        "skill-problem"
+    );
+
+    updateSkill(
+        "speaking",
+        "skill-speaking"
+    );
+
+
+    updateTarget(
+        "career",
+        "target-career"
+    );
+
+    updateTarget(
+        "communication",
+        "target-communication"
+    );
+
+    updateTarget(
+        "skill",
+        "target-skill"
+    );
+
+
+    const skillDone =
+        Object.values(
+            careerData.skills
+        ).filter(Boolean).length;
+
+
+    const targetDone =
+        Object.values(
+            careerData.targets
+        ).filter(Boolean).length;
+
+
+    const total =
+        skillDone + targetDone;
+
+
+    const progress =
+        Math.round(
+            (total / 7) * 100
+        );
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        progress + "%";
+
+
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        "Progress: " + progress + "%";
+
+}
+
+
+/* UPDATE SKILL */
+
+function updateSkill(skill,id){
+
+    const box =
+        document.getElementById(id);
+
+    const button =
+        box.querySelector("button");
+
+
+    if(careerData.skills[skill]){
+
+        box.classList.add("done");
+
+        button.textContent =
+            "↩ Undo";
+
+    }
+    else{
+
+        box.classList.remove("done");
+
+        button.textContent =
+            "Mark Done";
+
+    }
+
+}
+
+
+/* UPDATE TARGET */
+
+function updateTarget(target,id){
+
+    const box =
+        document.getElementById(id);
+
+    const button =
+        box.querySelector("button");
+
+
+    if(careerData.targets[target]){
+
+        box.style.opacity = ".65";
+
+        button.textContent =
+            "↩ Undo";
+
+    }
+    else{
+
+        box.style.opacity = "1";
+
+        button.textContent =
+            "Done";
+
+    }
+
+}
+
+
+/* START */
+
+loadCareer();
+
+createFocuslyNav("career");
+
+</script>
+
+</body>
+</html>
