@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FOCUSLY - Profile</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#172033;
+    padding-bottom:90px;
+}
+
+.header{
+    background:#172033;
+    color:white;
+    padding:25px 20px;
+    border-radius:0 0 25px 25px;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.header p{
+    margin-top:5px;
+    font-size:13px;
+    opacity:.8;
+}
+
+.container{
+    padding:20px;
+}
+
+.back{
+    font-weight:bold;
+    font-size:14px;
+    margin-bottom:18px;
+    cursor:pointer;
+}
+
+.card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    margin-bottom:16px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+
+.profile-top{
+    text-align:center;
+}
+
+.avatar{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:#172033;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 12px;
+    font-size:32px;
+    font-weight:bold;
+}
+
+.profile-top h2{
+    font-size:21px;
+}
+
+.profile-top p{
+    color:#687386;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.info{
+    margin-top:15px;
+}
+
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:12px 0;
+    border-bottom:1px solid #eee;
+    font-size:14px;
+}
+
+.info-row:last-child{
+    border-bottom:none;
+}
+
+.label{
+    color:#687386;
+}
+
+.value{
+    font-weight:bold;
+    text-align:right;
+}
+
+.goal{
+    background:#172033;
+    color:white;
+    padding:16px;
+    border-radius:15px;
+}
+
+.goal small{
+    opacity:.7;
+}
+
+.goal h2{
+    margin-top:6px;
+    font-size:20px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.stat{
+    background:#f5f7fb;
+    padding:15px 8px;
+    border-radius:13px;
+    text-align:center;
+}
+
+.stat-number{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.stat-label{
+    font-size:11px;
+    color:#687386;
+    margin-top:5px;
+}
+
+.danger-btn{
+    width:100%;
+    border:none;
+    background:#172033;
+    color:white;
+    padding:14px;
+    border-radius:11px;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>👤 Profile</h1>
+
+    <p>
+        Your FOCUSLY profile
+    </p>
+
+</div>
+
+
+<div class="container">
+
+    <div
+        class="back"
+        onclick="focuslyGo('index.html')"
+    >
+        ← Back to Dashboard
+    </div>
+
+
+    <!-- PROFILE -->
+
+    <div class="card profile-top">
+
+        <div
+            class="avatar"
+            id="avatar"
+        >
+            F
+        </div>
+
+        <h2 id="profileName">
+            Student
+        </h2>
+
+        <p id="profileCourse">
+            B.Sc. CS
+        </p>
+
+
+        <div class="info">
+
+            <div class="info-row">
+
+                <span class="label">
+                    College
+                </span>
+
+                <span
+                    class="value"
+                    id="profileCollege"
+                >
+                    Not Set
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="label">
+                    Course
+                </span>
+
+                <span
+                    class="value"
+                    id="profileCourseInfo"
+                >
+                    Not Set
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="label">
+                    Semester
+                </span>
+
+                <span
+                    class="value"
+                    id="profileSemester"
+                >
+                    Not Set
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CAREER -->
+
+    <div class="card">
+
+        <div class="goal">
+
+            <small>
+                🎯 CAREER GOAL
+            </small>
+
+            <h2 id="careerGoal">
+                Not Set
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="card">
+
+        <h2 style="font-size:18px;margin-bottom:12px;">
+            📊 My Progress
+        </h2>
+
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <div
+                    class="stat-number"
+                    id="taskCount"
+                >
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Tasks
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div
+                    class="stat-number"
+                    id="examCount"
+                >
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Exams
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div
+                    class="stat-number"
+                    id="studyCount"
+                >
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Study Plans
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESET -->
+
+    <div class="card">
+
+        <h2 style="font-size:18px;margin-bottom:10px;">
+            ⚙️ App Data
+        </h2>
+
+        <p style="font-size:13px;color:#687386;margin-bottom:13px;">
+            Resetting will remove all FOCUSLY data from this device.
+        </p>
+
+        <button
+            class="danger-btn"
+            onclick="resetAppData()"
+        >
+            🗑️ Reset All App Data
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- COMMON NAVIGATION -->
+
+<script src="nav.js"></script>
+
+
+<script>
+
+/* PROFILE DATA */
+
+function loadProfile(){
+
+    const saved =
+        localStorage.getItem("focuslyProfile");
+
+
+    if(saved){
+
+        try{
+
+            const profile =
+                JSON.parse(saved);
+
+
+            const name =
+                profile.name || "Student";
+
+
+            document.getElementById(
+                "profileName"
+            ).textContent =
+                name;
+
+
+            document.getElementById(
+                "profileCollege"
+            ).textContent =
+                profile.college || "Not Set";
+
+
+            document.getElementById(
+                "profileCourse"
+            ).textContent =
+                profile.course || "B.Sc. CS";
+
+
+            document.getElementById(
+                "profileCourseInfo"
+            ).textContent =
+                profile.course || "Not Set";
+
+
+            document.getElementById(
+                "profileSemester"
+            ).textContent =
+                profile.semester || "Not Set";
+
+
+            document.getElementById(
+                "avatar"
+            ).textContent =
+                name.charAt(0).toUpperCase();
+
+        }
+        catch(error){
+
+            console.log("Profile data error");
+
+        }
+
+    }
+
+
+    loadCareer();
+
+    loadStats();
+
+}
+
+
+/* CAREER */
+
+function loadCareer(){
+
+    const saved =
+        localStorage.getItem("focuslyCareer");
+
+
+    if(saved){
+
+        try{
+
+            const career =
+                JSON.parse(saved);
+
+
+            document.getElementById(
+                "careerGoal"
+            ).textContent =
+                career.goal || "Not Set";
+
+        }
+        catch(error){
+
+            console.log("Career data error");
+
+        }
+
+    }
+
+}
+
+
+/* STATS */
+
+function loadStats(){
+
+    const tasks =
+        JSON.parse(
+            localStorage.getItem("focuslyTasks") || "[]"
+        );
+
+
+    const exams =
+        JSON.parse(
+            localStorage.getItem("focuslyExams") || "[]"
+        );
+
+
+    const study =
+        JSON.parse(
+            localStorage.getItem("focuslyStudyPlans") || "[]"
+        );
+
+
+    document.getElementById(
+        "taskCount"
+    ).textContent =
+        tasks.length;
+
+
+    document.getElementById(
+        "examCount"
+    ).textContent =
+        exams.length;
+
+
+    document.getElementById(
+        "studyCount"
+    ).textContent =
+        study.length;
+
+}
+
+
+/* RESET */
+
+function resetAppData(){
+
+    const confirmReset =
+        confirm(
+            "Are you sure? All FOCUSLY data will be deleted."
+        );
+
+
+    if(!confirmReset){
+        return;
+    }
+
+
+    localStorage.removeItem("focuslyProfile");
+
+    localStorage.removeItem("focuslyTasks");
+
+    localStorage.removeItem("focuslyExams");
+
+    localStorage.removeItem("focuslyStudyPlans");
+
+    localStorage.removeItem("focuslyReminders");
+
+    localStorage.removeItem("focuslyAttendance");
+
+    localStorage.removeItem("focuslyCareer");
+
+
+    alert(
+        "All FOCUSLY data has been reset."
+    );
+
+
+    location.reload();
+
+}
+
+
+/* START */
+
+loadProfile();
+
+createFocuslyNav("profile");
+
+</script>
+
+</body>
+</html>
