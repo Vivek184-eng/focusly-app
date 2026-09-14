@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOCUSLY</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#172033;
+    padding-bottom:90px;
+}
+
+.header{
+    background:#172033;
+    color:white;
+    padding:24px 20px;
+    border-radius:0 0 25px 25px;
+}
+
+.logo{
+    font-size:27px;
+    font-weight:bold;
+}
+
+.tagline{
+    font-size:13px;
+    margin-top:5px;
+    opacity:.8;
+}
+
+.welcome{
+    margin-top:25px;
+}
+
+.welcome h2{
+    font-size:22px;
+}
+
+.welcome p{
+    margin-top:5px;
+    font-size:14px;
+    opacity:.8;
+}
+
+.container{
+    padding:20px;
+}
+
+.section-title{
+    font-size:19px;
+    font-weight:bold;
+    margin:10px 0 15px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 4px 15px rgba(0,0,0,.06);
+}
+
+.module{
+    min-height:125px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.module:active{
+    transform:scale(.97);
+}
+
+.icon{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.card h3{
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+.card p{
+    font-size:13px;
+    color:#687386;
+}
+
+.live-number{
+    font-size:24px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.career-card{
+    margin-top:20px;
+    background:#172033;
+    color:white;
+}
+
+.career-card p{
+    color:#d5d9e2;
+}
+
+.career-goal{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.quick{
+    margin-top:20px;
+}
+
+.quick-btn{
+    width:100%;
+    border:none;
+    padding:14px;
+    margin-bottom:10px;
+    border-radius:13px;
+    background:white;
+    text-align:left;
+    font-size:14px;
+    font-weight:bold;
+    box-shadow:0 3px 12px rgba(0,0,0,.05);
+    cursor:pointer;
+}
+
+.profile-card{
+    margin-top:20px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    cursor:pointer;
+}
+
+.avatar{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:#172033;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.profile-info h3{
+    margin-bottom:4px;
+}
+
+.profile-info p{
+    font-size:13px;
+    color:#687386;
+}
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:70px;
+    background:white;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    box-shadow:0 -4px 15px rgba(0,0,0,.08);
+    z-index:100;
+}
+
+.nav-item{
+    text-align:center;
+    font-size:11px;
+    color:#687386;
+    cursor:pointer;
+}
+
+.nav-icon{
+    font-size:21px;
+    display:block;
+    margin-bottom:3px;
+}
+
+.nav-item.active{
+    color:#172033;
+    font-weight:bold;
+}
+</style>
+<head>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#172033">
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+
+    <div class="logo">FOCUSLY</div>
+    <div class="tagline">Study Smart. Build Your Career.</div>
+
+    <div class="welcome">
+        <h2 id="greeting">Good Morning 👋</h2>
+        <p id="welcomeName">Welcome back, Student</p>
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <!-- LIVE OVERVIEW -->
+    <div class="section-title">📊 Your Overview</div>
+
+    <div class="grid">
+
+        <div class="card module" onclick="go('tasks.html')">
+            <div class="icon">✅</div>
+            <h3>Tasks</h3>
+            <div class="live-number" id="taskCount">0</div>
+            <p id="taskText">No pending tasks</p>
+        </div>
+
+
+        <div class="card module" onclick="go('exams.html')">
+            <div class="icon">📝</div>
+            <h3>Exams</h3>
+            <div class="live-number" id="examCount">0</div>
+            <p>Upcoming exams</p>
+        </div>
+
+
+        <div class="card module" onclick="go('study.html')">
+            <div class="icon">📚</div>
+            <h3>Study Plans</h3>
+            <div class="live-number" id="studyCount">0</div>
+            <p id="studyText">Plans available</p>
+        </div>
+
+
+        <div class="card module" onclick="go('attendance.html')">
+            <div class="icon">📊</div>
+            <h3>Attendance</h3>
+            <div class="live-number" id="attendancePercent">0%</div>
+            <p>Overall attendance</p>
+        </div>
+
+    </div>
+
+
+    <!-- CAREER -->
+    <div class="card career-card" onclick="go('career.html')">
+
+        <div class="icon">🎯</div>
+
+        <h3>Career Focus</h3>
+
+        <div class="career-goal" id="careerGoal">
+            Not Set
+        </div>
+
+        <p id="careerText">
+            Set your career goal and start building your skills.
+        </p>
+
+    </div>
+
+
+    <!-- REMINDERS -->
+    <div class="section-title" style="margin-top:25px;">
+        🔔 Reminders
+    </div>
+
+    <div class="card module" onclick="go('reminders.html')">
+
+        <div class="icon">🔔</div>
+
+        <h3>Pending Reminders</h3>
+
+        <div class="live-number" id="reminderCount">
+            0
+        </div>
+
+        <p id="reminderText">
+            No pending reminders
+        </p>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick">
+
+        <div class="section-title">
+            ⚡ Quick Actions
+        </div>
+
+        <button class="quick-btn" onclick="go('tasks.html')">
+            ➕ Add Task
+        </button>
+
+        <button class="quick-btn" onclick="go('study.html')">
+            📚 Add Study Plan
+        </button>
+
+        <button class="quick-btn" onclick="go('exams.html')">
+            📝 Add Exam
+        </button>
+
+        <button class="quick-btn" onclick="go('reminders.html')">
+            🔔 Add Reminder
+        </button>
+
+    </div>
+
+
+    <!-- PROFILE -->
+    <div class="card profile-card" onclick="go('profile.html')">
+
+        <div class="avatar" id="avatar">
+            S
+        </div>
+
+        <div class="profile-info">
+
+            <h3 id="profileName">
+                Student
+            </h3>
+
+            <p id="profileCourse">
+                Complete your profile
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+
+    <div class="nav-item active" onclick="go('index.html')">
+        <span class="nav-icon">🏠</span>
+        Home
+    </div>
+
+    <div class="nav-item" onclick="go('schedule.html')">
+        <span class="nav-icon">🗓️</span>
+        Schedule
+    </div>
+
+    <div class="nav-item" onclick="go('tasks.html')">
+        <span class="nav-icon">✅</span>
+        Tasks
+    </div>
+
+    <div class="nav-item" onclick="go('study.html')">
+        <span class="nav-icon">📚</span>
+        Study
+    </div>
+
+    <div class="nav-item" onclick="go('profile.html')">
+        <span class="nav-icon">👤</span>
+        Profile
+    </div>
+
+</div>
+
+
+<script>
+
+/* ---------------- NAVIGATION ---------------- */
+
+function go(page){
+    window.location.href = page;
+}
+
+
+/* ---------------- GREETING ---------------- */
+
+function setGreeting(){
+
+    const hour = new Date().getHours();
+
+    let greeting = "Good Morning 👋";
+
+    if(hour >= 12 && hour < 17){
+        greeting = "Good Afternoon 👋";
+    }
+    else if(hour >= 17 && hour < 21){
+        greeting = "Good Evening 👋";
+    }
+    else if(hour >= 21 || hour < 5){
+        greeting = "Good Night 🌙";
+    }
+
+    document.getElementById("greeting").textContent = greeting;
+}
+
+
+/* ---------------- PROFILE ---------------- */
+
+function loadProfile(){
+
+    const data = localStorage.getItem("focuslyProfile");
+
+    if(!data) return;
+
+    try{
+
+        const profile = JSON.parse(data);
+
+        const name = profile.name || "Student";
+
+        document.getElementById("welcomeName").textContent =
+            "Welcome back, " + name;
+
+        document.getElementById("profileName").textContent =
+            name;
+
+        document.getElementById("avatar").textContent =
+            name.charAt(0).toUpperCase();
+
+        let course = profile.course || "";
+
+        if(profile.semester){
+            course += " • " + profile.semester;
+        }
+
+        document.getElementById("profileCourse").textContent =
+            course || "Student";
+
+    }catch(error){
+
+        console.log("Profile data error");
+
+    }
+
+}
+
+
+/* ---------------- TASKS ---------------- */
+
+function loadTasks(){
+
+    const data = localStorage.getItem("focuslyTasks");
+
+    if(!data) return;
+
+    try{
+
+        const tasks = JSON.parse(data);
+
+        if(!Array.isArray(tasks)) return;
+
+        const pending = tasks.filter(task =>
+            task.completed !== true
+        ).length;
+
+        document.getElementById("taskCount").textContent =
+            pending;
+
+        if(pending === 0){
+
+            document.getElementById("taskText").textContent =
+                "All tasks completed 🎉";
+
+        }
+        else{
+
+            document.getElementById("taskText").textContent =
+                pending + " pending task" +
+                (pending > 1 ? "s" : "");
+
+        }
+
+    }catch(error){
+
+        console.log("Task data error");
+
+    }
+
+}
+
+
+/* ---------------- EXAMS ---------------- */
+
+function loadExams(){
+
+    const data = localStorage.getItem("focuslyExams");
+
+    if(!data) return;
+
+    try{
+
+        const exams = JSON.parse(data);
+
+        if(!Array.isArray(exams)) return;
+
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        const upcoming = exams.filter(exam => {
+
+            if(!exam.date) return true;
+
+            const examDate = new Date(exam.date);
+            examDate.setHours(0,0,0,0);
+
+            return examDate >= today;
+
+        });
+
+        document.getElementById("examCount").textContent =
+            upcoming.length;
+
+    }catch(error){
+
+        console.log("Exam data error");
+
+    }
+
+}
+
+
+/* ---------------- STUDY PLANS ---------------- */
+
+function loadStudyPlans(){
+
+    const data = localStorage.getItem("focuslyStudyPlans");
+
+    if(!data) return;
+
+    try{
+
+        const plans = JSON.parse(data);
+
+        if(!Array.isArray(plans)) return;
+
+        const pending = plans.filter(plan =>
+            plan.completed !== true
+        ).length;
+
+        document.getElementById("studyCount").textContent =
+            pending;
+
+        if(pending === 0 && plans.length > 0){
+
+            document.getElementById("studyText").textContent =
+                "All plans completed 🎉";
+
+        }
+        else if(pending > 0){
+
+            document.getElementById("studyText").textContent =
+                pending + " pending plan" +
+                (pending > 1 ? "s" : "");
+
+        }
+
+    }catch(error){
+
+        console.log("Study data error");
+
+    }
+
+}
+
+
+/* ---------------- ATTENDANCE ---------------- */
+
+function loadAttendance(){
+
+    const data = localStorage.getItem("focuslyAttendance");
+
+    if(!data) return;
+
+    try{
+
+        const attendance = JSON.parse(data);
+
+        let present = 0;
+        let absent = 0;
+
+
+        /*
+          Handles array format:
+          [
+            {present: 10, absent: 2},
+            {present: 8, absent: 1}
+          ]
+        */
+
+        if(Array.isArray(attendance)){
+
+            attendance.forEach(subject => {
+
+                present += Number(subject.present) || 0;
+                absent += Number(subject.absent) || 0;
+
+            });
+
+        }
+
+        /*
+          Handles object format if attendance
+          was saved as an object.
+        */
+
+        else if(typeof attendance === "object"){
+
+            Object.values(attendance).forEach(subject => {
+
+                if(typeof subject === "object"){
+
+                    present += Number(subject.present) || 0;
+                    absent += Number(subject.absent) || 0;
+
+                }
+
+            });
+
+        }
+
+
+        const total = present + absent;
+
+        if(total > 0){
+
+            const percentage =
+                (present / total) * 100;
+
+            document.getElementById("attendancePercent")
+                .textContent =
+                percentage.toFixed(1) + "%";
+
+        }
+
+    }catch(error){
+
+        console.log("Attendance data error");
+
+    }
+
+}
+
+
+/* ---------------- CAREER ---------------- */
+
+function loadCareer(){
+
+    const data = localStorage.getItem("focuslyCareer");
+
+    if(!data) return;
+
+    try{
+
+        const career = JSON.parse(data);
+
+        let goal = "Not Set";
+
+        if(typeof career === "string"){
+
+            goal = career;
+
+        }
+        else if(career && career.goal){
+
+            goal = career.goal;
+
+        }
+
+        document.getElementById("careerGoal").textContent =
+            goal;
+
+        if(goal !== "Not Set"){
+
+            document.getElementById("careerText").textContent =
+                "Keep working towards your career goal 🚀";
+
+        }
+
+    }catch(error){
+
+        console.log("Career data error");
+
+    }
+
+}
+
+
+/* ---------------- REMINDERS ---------------- */
+
+function loadReminders(){
+
+    const data = localStorage.getItem("focuslyReminders");
+
+    if(!data) return;
+
+    try{
+
+        const reminders = JSON.parse(data);
+
+        if(!Array.isArray(reminders)) return;
+
+        const pending = reminders.filter(reminder =>
+            reminder.completed !== true
+        ).length;
+
+        document.getElementById("reminderCount").textContent =
+            pending;
+
+        if(pending === 0){
+
+            document.getElementById("reminderText").textContent =
+                "No pending reminders";
+
+        }
+        else{
+
+            document.getElementById("reminderText").textContent =
+                pending + " pending reminder" +
+                (pending > 1 ? "s" : "");
+
+        }
+
+    }catch(error){
+
+        console.log("Reminder data error");
+
+    }
+
+}
+
+
+/* ---------------- START APP ---------------- */
+
+setGreeting();
+
+loadProfile();
+
+loadTasks();
+
+loadExams();
+
+loadStudyPlans();
+
+loadAttendance();
+
+loadCareer();
+
+loadReminders();
+
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+            .then(() => {
+                console.log("FOCUSLY Service Worker registered");
+            })
+            .catch(error => {
+                console.log("Service Worker error:", error);
+            });
+    });
+}
+</script>
+
+</body>
+</html>
